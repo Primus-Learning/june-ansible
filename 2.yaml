@@ -1,0 +1,23 @@
+---
+- name: copy files and update
+  hosts: all
+  tasks:
+  - name: copy
+    copy:
+      src: f3
+      dest: /home/ubuntu
+  - name: update permisions
+    file:
+      path: /home/ubuntu/f3
+      mode: 775
+
+- name: add data and verify
+  hosts: all
+  become: true
+  tasks:
+  - name: add data
+    shell:
+      cmd: 'echo "Tina" > /home/ubuntu/f3'
+  - name: verify
+    shell:
+      cmd: 'cat /home/ubuntu/f3'

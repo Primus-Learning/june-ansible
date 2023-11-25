@@ -1,0 +1,8 @@
+---
+- name: copy files
+  hosts: all
+  tasks:
+  - name: copy
+    copy:
+      src: f2
+      dest: /home/ubuntu
