@@ -1,21 +1,35 @@
 ---
-- name: install nginx
-  hosts: api
-  become: true
+- name: Install and Configure MySQL
+  hosts: db
+  become: yes
+  vars:
+    mysql_root_password: password
   tasks:
-  - name: install nginx on ubuntu
-    apt:
-      name: nginx
-      state: present
-      update_cache: true
+    - name: Update APT cache
+      become: yes
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+      tags:
+        - update_cache
 
-  - name: start nginx
-    service:
-      name: nginx
-      enabled: yes
-      state: started
+    - name: Install MySQL Server
+      become: yes
+      apt:
+        name: mysql-server
+        state: present
+      when: ansible_os_family == 'Debian'
+      tags:
+        - install_mysql
+    - name: install python
+      apt:
+       name: python3-pymysql
+       state: present
 
-  - name: copy html
-    copy:
-      src: index.html
-      dest: /var/www/html/index.html
+    - name: Start MySQL service
+      become: yes
+      service:
+        name: mysql
+        state: started
+      tags:
+        - start_mysql
